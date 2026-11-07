@@ -60,7 +60,7 @@ The HTC 10 evo originally shipped with Android 7.0 (Nougat) powered by Linux ker
   - Stripped unused digital broadcast demuxers (`CONFIG_DVB_CORE`, `CONFIG_DVB_MPQ`) in defconfig, freeing **38.1 MB** of contiguous vmalloc space.
 - **ION High-Order Page Pool Capping**:
   - Clamped high-order page pool allocations (order 9, 8, 4, 0 capped at 2, 2, 16, 128 elements) in `drivers/staging/android/ion/ion_page_pool.c`.
-  - Prevents ION memory bloat after camera frame bursts, dropping ION idle usage to **7.6 MB** instead of 741 MB.
+  - Prevents ION memory bloat after burst allocations, dropping ION idle usage to **7.6 MB** instead of 741 MB.
 - **ZRAM & Swap Optimization**:
   - Configured 2.0 GB LZ4 ZRAM swap with optimized vm pressure and swappiness.
 
@@ -122,19 +122,28 @@ This script compiles the kernel, bundles the Android 14 ramdisk, appends verifie
 ---
 
 ## 7. Known Issues & Workarounds
-- **Camera2 SENSOR_NOISE_PROFILE**: The OmniVision OV8858 front sensor driver does not populate noise profile metadata. Use the provided `Acadia_GCam_Optimized.apk` which includes an inline Halide fallback.
 - **Legacy 3.10 eBPF Restrictions**: Android 14 native eBPF requires Linux 4.9+ features. Acadia uses the custom legacy BPF compatibility layer (`ro.acadia.legacy_bpf=1`) for network accounting.
 
 ---
 
-## 8. Source Attribution & Provenance
-- Based on the open-source HTC 10 evo (MSM8994) kernel releases from HTC Corporation.
-- Maintained and modernized using upstream contributions from LineageOS (`android_kernel_htc_msm8994`).
-- Android 14 compatibility backports, memory optimizations, and device bringup authored by the Acadia Development Team.
+## 8. Development Provenance & History
+- **Reverse-Engineered & AI-Assisted Bringup**:
+  - Official developer inquiries and source requests were submitted to HTC regarding updated kernel source code, device tree specifications, and BSP documentation for the HTC 10 evo / Bolt on modern Android releases. **HTC never responded.**
+  - Consequently, this entire kernel modernization—including Android 14 backports (`sys_renameat2`, 64-bit binder, netlink attributes, cgroup freezer), low-memory kernel optimizations (`dm-bufio` hash reduction, ION pool limits), USB OTG power delivery repair, and hardware driver compatibility—was **100% reverse engineered through exhaustive trial-and-error, kernel debugging, and AI-assisted engineering**.
+- **Base Tree**: Reconstructed from available legacy 3.10.84 MSM8994 sources and LineageOS trees, then modernized with extensive custom patches for Android 14.
 
 ---
 
-## 9. Licensing & GPL Compliance
-This project is licensed under the terms of the **GNU General Public License Version 2 (GPLv2)** as published by the Free Software Foundation. See [COPYING](COPYING) for the full text of the license.
+## 9. Licensing & Mandatory Attribution Requirements
+This project is distributed under the terms of the **GNU General Public License Version 2 (GPLv2)** as published by the Free Software Foundation. See [COPYING](COPYING) for the full license text.
 
-All device modifications, backports, and configuration files are freely available in accordance with open-source software standards.
+### Attribution Notice:
+Any developer, organization, or project that uses, forks, ports, or cherry-picks this kernel source code or its patches **MUST explicitly credit and mention**:
+- **Author**: **deactivated0**
+- **Project**: **Acadia Project (Android 14 for HTC 10 evo / HTC Bolt)**
+- **Repository**: [https://github.com/deactivated0/android_kernel_htc_acadia](https://github.com/deactivated0/android_kernel_htc_acadia)
+
+Attribution must be clearly maintained in your:
+1. Public ROM release threads (e.g. XDA Developers, Telegram, websites).
+2. Git commit history (preserving author metadata or `Co-authored-by: deactivated0 <deactivated0@users.noreply.github.com>`).
+3. Release documentation and credits.
