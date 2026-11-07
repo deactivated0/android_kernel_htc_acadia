@@ -11,7 +11,19 @@ The HTC 10 evo originally shipped with Android 7.0 (Nougat) powered by Linux ker
 
 ---
 
-## 2. Supported Devices & Hardware
+## 2. Development History & Reverse Engineering Journey
+> **Author's Statement**:
+> "I asked HTC for the kernel source code and technical documentation, but they never answered.
+>
+> The entire kernel bringup had to be completely reverse engineered from scratch through exhaustive trial-and-error using AI assistance. I worked through every component, failure, and edge case until it was fully bugless.
+>
+> The absolute hardest part was getting the display to show anything at all. In the beginning, the screen only displayed glitched, distorted colors—flashing bright pink and bright green. After multiple rounds of debugging and trial-and-error adjustments, the AI managed to get a working picture. Immediately after, it showed the boot animation, which then bootlooped continuously.
+>
+> Through further reverse engineering of Android 14 binder interfaces, Bionic syscalls (`sys_renameat2`, `memfd_create`), netlink protocols, and cgroup freezer hooks, the bootloops were eliminated, transforming a dormant device into a daily-driver Android 14 system."
+
+---
+
+## 3. Supported Devices & Hardware
 | Property | Value |
 | :--- | :--- |
 | **Marketing Name** | HTC 10 evo / HTC Bolt |
@@ -26,15 +38,6 @@ The HTC 10 evo originally shipped with Android 7.0 (Nougat) powered by Linux ker
 | **Front Camera** | 8 MP (OmniVision OV8858) |
 | **Fingerprint** | Fingerprint Cards FPC1020 (TEE integration) |
 | **USB Interface** | Type-C 2.0 with FUSB302 USB Power Delivery / OTG controller |
-
----
-
-## 3. Kernel Architecture & Technical Details
-- **Base Version**: Linux 3.10.84-perf
-- **Architecture**: `arm64` (AArch64)
-- **Defconfig**: `arch/arm64/configs/lineageos_aca_defconfig`
-- **Device Tree**: `arch/arm64/boot/dts/qcom/msm8994-v2.1-htc_acadia-pvt.dts`
-- **Boot Image Target**: `/dev/block/bootdevice/by-name/boot` (`mmcblk0p64`, 64 MB partition limit)
 
 ---
 
@@ -126,18 +129,10 @@ This script compiles the kernel, bundles the Android 14 ramdisk, appends verifie
 
 ---
 
-## 8. Development Provenance & History
-- **Reverse-Engineered & AI-Assisted Bringup**:
-  - Official developer inquiries and source requests were submitted to HTC regarding updated kernel source code, device tree specifications, and BSP documentation for the HTC 10 evo / Bolt on modern Android releases. **HTC never responded.**
-  - Consequently, this entire kernel modernization—including Android 14 backports (`sys_renameat2`, 64-bit binder, netlink attributes, cgroup freezer), low-memory kernel optimizations (`dm-bufio` hash reduction, ION pool limits), USB OTG power delivery repair, and hardware driver compatibility—was **100% reverse engineered through exhaustive trial-and-error, kernel debugging, and AI-assisted engineering**.
-- **Base Tree**: Reconstructed from available legacy 3.10.84 MSM8994 sources and LineageOS trees, then modernized with extensive custom patches for Android 14.
-
----
-
-## 9. Licensing & Mandatory Attribution Requirements
+## 8. Licensing & Mandatory Attribution Requirements
 This project is distributed under the terms of the **GNU General Public License Version 2 (GPLv2)** as published by the Free Software Foundation. See [COPYING](COPYING) for the full license text.
 
-### Attribution Notice:
+### Mandatory Attribution Notice:
 Any developer, organization, or project that uses, forks, ports, or cherry-picks this kernel source code or its patches **MUST explicitly credit and mention**:
 - **Author**: **deactivated0**
 - **Project**: **Acadia Project (Android 14 for HTC 10 evo / HTC Bolt)**
